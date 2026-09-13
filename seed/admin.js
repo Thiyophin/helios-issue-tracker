@@ -1,22 +1,21 @@
-require("dotenv").config();
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-
-const User = require("../models/User");
+import User from "../models/User.js";
+import logger from "../utils/logger.js";
 
 const seedAdmin = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
 
-    console.log("MongoDB connected");
+    logger.info("MongoDB connected successfully");
 
     const existingAdmin = await User.findOne({
       role: "admin",
     });
 
     if (existingAdmin) {
-      console.log("Admin already exists");
+      logger.info("Admin already exists");
       process.exit(0);
     }
 
@@ -33,11 +32,15 @@ const seedAdmin = async () => {
       role: "admin",
     });
 
-    console.log("Admin created successfully");
+    logger.info("Admin created successfully");
 
     process.exit(0);
   } catch (error) {
-    console.error("Error seeding admin:", error);
+    logger.error("Error seeding admin", {
+      error: error.message,
+      stack: error.stack,
+    });
+
     process.exit(1);
   }
 };
