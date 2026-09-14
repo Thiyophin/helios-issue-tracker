@@ -1,41 +1,44 @@
 import winston from "winston";
+import "winston-mongodb";
 
-const { combine, timestamp, printf, colorize, errors, json } =
+const { combine, timestamp, errors, json, colorize, simple } =
   winston.format;
-
-const developmentFormat = combine(
-  colorize(),
-  timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-  errors({ stack: true }),
-  printf(({ timestamp, level, message, stack }) => {
-    return `${timestamp} ${level}: ${stack || message}`;
-  })
-);
-
-const productionFormat = combine(
-  timestamp(),
-  errors({ stack: true }),
-  json()
-);
 
 const logger = winston.createLogger({
   level: "info",
 
-  format:
-    process.env.NODE_ENV === "production"
-      ? productionFormat
-      : developmentFormat,
+  format: combine(
+    timestamp(),
+    errors({ stack: true }),
+    json()
+  ),
 
   transports: [
-    new winston.transports.Console(),
-
+    // Local error log
     new winston.transports.File({
       filename: "logs/error.log",
       level: "error",
     }),
 
+    // Local combined log
     new winston.transports.File({
       filename: "logs/combined.log",
+    }),
+
+    // MongoDB logs
+    new winston.transports.MongoDB({
+      db: process.env.MONGO_URI,
+      collection: "logs",
+      level: "info",
+      storeHost: true,
+    }),
+
+    // Terminal logs during development
+    new winston.transports.Console({
+      format: combine(
+        colorize(),
+        simple()
+      ),
     }),
   ],
 });
