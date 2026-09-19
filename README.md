@@ -1,17 +1,33 @@
 # Task Management Backend API
 
-A role-based Task Management System built with **Node.js**, **Express.js**, and **MongoDB**. This backend provides authentication, user management, feature management, task management, and test case management with JWT-based authorization.
+A role-based **Task Management System** REST API built with **Node.js**, **Express 5**, and **MongoDB**. It provides JWT authentication, admin-controlled user management, and creation of features, tasks, and test cases with role-based authorization.
+
+> **Project status:** early stage. Authentication, user management, and the _create_ flows are implemented. List, read, update, comment, status-transition, and API-docs features are on the [Roadmap](#roadmap).
 
 ---
 
 ## Tech Stack
 
-- **Node.js** + **Express.js**
+- **Node.js** + **Express 5**
 - **MongoDB** + **Mongoose**
-- **JWT** Authentication
+- **Passport** (`passport-jwt`) + **JWT** for authentication
 - **bcryptjs** for password hashing
 - **Winston** for application logging
 - **dotenv** for environment configuration
+- **ESLint** + **Prettier** + **Husky** + **lint-staged** for code quality
+
+---
+
+## Features
+
+- JWT authentication (login → bearer token)
+- Role-based authorization middleware
+- Administrator account seeding (admins cannot self-register)
+- Admin-only user creation with role assignment at creation time
+- Feature creation (team leads)
+- Task creation (team leads, developers)
+- Test case creation (testers)
+- Structured application logging
 
 ---
 
@@ -20,65 +36,76 @@ A role-based Task Management System built with **Node.js**, **Express.js**, and 
 ```text
 task-management-backend/
 ├── config/
-│   └── db.js
+│   ├── db.js              # MongoDB connection
+│   └── passport.js        # passport-jwt strategy
 ├── controllers/
+│   ├── authController.js
+│   ├── userController.js
+│   ├── featureController.js
+│   ├── taskController.js
+│   └── testCaseController.js
 ├── middleware/
+│   ├── authMiddleware.js  # JWT authentication
+│   └── roleMiddleware.js  # role-based authorization
 ├── models/
+│   ├── User.js
+│   ├── Feature.js
+│   ├── Task.js
+│   └── TestCase.js
 ├── routes/
+│   ├── authRoutes.js
+│   ├── adminRoutes.js
+│   ├── featureRoutes.js
+│   ├── taskRoutes.js
+│   └── testCaseRoutes.js
 ├── seed/
-│   └── admin.js
+│   └── admin.js           # seeds the administrator account
 ├── utils/
-│   └── logger.js
-├── logs/
-├── .env
-├── .gitignore
+│   └── logger.js          # Winston logger
+├── eslint.config.js
+├── .env                   # not committed
 ├── package.json
-└── server.js
+└── server.js              # app entry point
 ```
 
 ---
 
-## Setup Instructions
+## Prerequisites
 
-### 1. Clone the repository
+- **Node.js** 18+ (Express 5 requires a modern Node runtime)
+- **MongoDB** running locally or a connection string to a hosted instance
+
+---
+
+## Setup
+
+### 1. Clone and install
 
 ```bash
 git clone <repository-url>
 cd task-management-backend
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
 ```
 
-### 3. Install MongoDB (Local)
+### 2. Start MongoDB
 
-Make sure MongoDB is installed and running on your machine.
-
-Start MongoDB:
+Make sure MongoDB is running locally (or have a hosted URI ready):
 
 ```bash
-sudo systemctl start mongod
+sudo systemctl start mongod   # Linux example
+mongosh                       # verify you can connect
 ```
 
-Verify:
+### 3. Configure environment variables
 
-```bash
-mongosh
-```
-
-### 4. Create the `.env` file
-
-Create a `.env` file in the project root.
+Create a `.env` file in the project root:
 
 ```env
 PORT=5000
 
 MONGO_URI=mongodb://127.0.0.1:27017/task_management
 
-JWT_SECRET=your-super-secret-key
+JWT_SECRET=replace-with-a-long-random-secret
 JWT_EXPIRES_IN=1h
 
 ADMIN_USERNAME=admin
@@ -87,57 +114,61 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=Admin@123
 ```
 
-### 5. Seed the Administrator account
+> Use a strong, random `JWT_SECRET` and change the default admin password before any real deployment.
 
-Run the seed script once.
+### 4. Seed the administrator account
+
+Administrator accounts can **only** be created through seeding. Run once:
 
 ```bash
-npm run seed:admin
+node seed/admin.js
 ```
 
-This creates the default Administrator account if it doesn't already exist.
+This creates the admin defined in your `.env` if one does not already exist.
+
+> Tip: add `"seed:admin": "node seed/admin.js"` to the `scripts` block in `package.json` so you can run `npm run seed:admin`.
 
 ---
 
-## How to Run the Application
-
-### Development Mode
+## Running the Application
 
 ```bash
-npm run dev
+npm run dev     # development (nodemon, auto-restart)
+npm start       # production
 ```
 
-The server starts at:
-
-```text
-http://localhost:5000
-```
-
-### Production Mode
-
-```bash
-npm start
-```
+The server starts at `http://localhost:5000` (or your `PORT`).
 
 ---
 
-## Default Roles
+## NPM Scripts
 
-The system supports the following user roles.
+| Script                 | Description                      |
+| ---------------------- | -------------------------------- |
+| `npm start`            | Run the server                   |
+| `npm run dev`          | Run with nodemon (auto-restart)  |
+| `npm run lint`         | Lint the codebase                |
+| `npm run lint:fix`     | Lint and auto-fix                |
+| `npm run format`       | Format with Prettier             |
+| `npm run format:check` | Check formatting without writing |
 
-| Role          | Description                                               |
-| ------------- | --------------------------------------------------------- |
-| **admin**     | Manages users and system administration.                  |
-| **team_lead** | Creates features and assigns tasks to developers/testers. |
-| **developer** | Creates tasks for themselves and works on assigned tasks. |
-| **tester**    | Creates test cases and works on assigned testing tasks.   |
-| **reader**    | Read-only access to project information.                  |
+---
+
+## Roles
+
+| Role          | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| **admin**     | Manages users; seeded only. Cannot modify the board. |
+| **team_lead** | Creates features; creates and assigns tasks.         |
+| **developer** | Creates tasks (auto-assigned to themselves).         |
+| **tester**    | Creates test cases (auto-assigned to themselves).    |
+| **reader**    | Intended for read-only visibility (see Roadmap).     |
 
 ---
 
 ## Seeded Administrator Credentials
 
-These credentials are created by the seed script.
+Created by the seed script from your `.env` values. Defaults:
 
 | Field    | Value               |
 | -------- | ------------------- |
@@ -146,110 +177,68 @@ These credentials are created by the seed script.
 | Password | `Admin@123`         |
 | Role     | `admin`             |
 
-> Change the default administrator password before using this application in production.
-
 ---
 
 ## API Endpoints
 
+All protected endpoints require an `Authorization: Bearer <token>` header.
+
 ### Authentication
 
-| Method | Endpoint          | Access |
-| ------ | ----------------- | ------ |
-| POST   | `/api/auth/login` | Public |
+| Method | Endpoint          | Access | Body                     |
+| ------ | ----------------- | ------ | ------------------------ |
+| POST   | `/api/auth/login` | Public | `{ username, password }` |
 
-### Admin
+### Admin — User Management
 
-| Method | Endpoint           | Access     |
-| ------ | ------------------ | ---------- |
-| POST   | `/api/admin/users` | Admin Only |
+| Method | Endpoint           | Access | Body                                        |
+| ------ | ------------------ | ------ | ------------------------------------------- |
+| POST   | `/api/admin/users` | Admin  | `{ username, name, email, password, role }` |
 
-Creates users with roles:
-
-- `team_lead`
-- `developer`
-- `tester`
-- `reader`
+Assignable roles: `team_lead`, `developer`, `tester`, `reader`.
 
 ### Features
 
-| Method | Endpoint        | Access         |
-| ------ | --------------- | -------------- |
-| POST   | `/api/features` | Team Lead Only |
-
-A Feature contains:
-
-- Title
-- Content
-- Comments
-- Created By
+| Method | Endpoint        | Access    | Body                 |
+| ------ | --------------- | --------- | -------------------- |
+| POST   | `/api/features` | Team Lead | `{ title, content }` |
 
 ### Tasks
 
-| Method | Endpoint     | Access                       |
-| ------ | ------------ | ---------------------------- |
-| POST   | `/api/tasks` | Team Lead, Developer, Tester |
+| Method | Endpoint     | Access               | Body                                       |
+| ------ | ------------ | -------------------- | ------------------------------------------ |
+| POST   | `/api/tasks` | Team Lead, Developer | `{ title, content, feature, assignedTo? }` |
 
-Task fields:
-
-- Title
-- Content
-- Comments
-- Created By
-- Assigned To
-- Feature
-- Status
-
-Task Status Values:
-
-- `New`
-- `Active`
-- `QA`
-- `Closed`
-
-Task Rules:
-
-- Team Lead creates tasks for a Feature and assigns them to a Developer or Tester.
-- Developer-created tasks are automatically assigned to the Developer.
-- Tester-created tasks are automatically assigned to the Tester.
+- **Team lead:** must provide `assignedTo` (a developer or tester).
+- **Developer:** task is automatically assigned to themselves; `assignedTo` is ignored.
+- The referenced `feature` must exist.
+- New tasks start with status `New`. Valid statuses: `New`, `Active`, `QA`, `Closed`.
 
 ### Test Cases
 
-| Method | Endpoint          | Access                              |
-| ------ | ----------------- | ----------------------------------- |
-| POST   | `/api/test-cases` | Tester Only                         |
-| GET    | `/api/test-cases` | All Authenticated Users _(planned)_ |
+| Method | Endpoint          | Access | Body                        |
+| ------ | ----------------- | ------ | --------------------------- |
+| POST   | `/api/test-cases` | Tester | `{ feature, title, steps }` |
 
-Test Case fields:
-
-- Feature
-- Title
-- Steps
-- Created By
-- Assigned To
-
-Rules:
-
-- Only Testers can create test cases.
-- Every authenticated user can view test cases.
+- `steps` must be a non-empty array.
+- The referenced `feature` must exist.
+- Test cases are auto-assigned to the creating tester.
 
 ---
 
-## Authentication
+## Authentication Flow
 
-Login returns a JWT access token.
-
-Include the token in protected requests.
+1. `POST /api/auth/login` with valid credentials.
+2. Receive a JWT in the response.
+3. Send it on protected requests:
 
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
 
----
+### Sample login
 
-## Sample Login Request
-
-**POST** `/api/auth/login`
+**Request** — `POST /api/auth/login`
 
 ```json
 {
@@ -258,7 +247,7 @@ Authorization: Bearer <JWT_TOKEN>
 }
 ```
 
-Successful response:
+**Response**
 
 ```json
 {
@@ -276,27 +265,23 @@ Successful response:
 
 ---
 
-## Logging
+## Data Model
 
-Application logging is handled using **Winston**.
-
-Logs include:
-
-- Application startup.
-- Authentication events.
-- User creation events.
-- Feature, Task, and Test Case creation.
-- Errors and exceptions.
+| Entity       | Fields                                                                         |
+| ------------ | ------------------------------------------------------------------------------ |
+| **User**     | username, name, email, password (hashed), role, timestamps                     |
+| **Feature**  | title, content, comments[], createdBy, timestamps                              |
+| **Task**     | title, content, comments[], createdBy, assignedTo, feature, status, timestamps |
+| **TestCase** | feature, title, steps[], createdBy, assignedTo, timestamps                     |
 
 ---
 
-## Current Features
+## Logging
 
-- JWT Authentication
-- Role-Based Authorization
-- Administrator Seeder
-- User Management
-- Feature Management
-- Task Management
-- Test Case Management
-- Winston Logging
+Application logging uses **Winston** and currently records startup, authentication, user/feature/task/test-case creation, and errors. See the [Roadmap](#roadmap) for planned logging changes.
+
+---
+
+## License
+
+ISC
