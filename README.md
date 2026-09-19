@@ -2,8 +2,6 @@
 
 A role-based **Task Management System** REST API built with **Node.js**, **Express 5**, and **MongoDB**. It provides JWT authentication, admin-controlled user management, and creation of features, tasks, and test cases with role-based authorization.
 
-> **Project status:** early stage. Authentication, user management, and the _create_ flows are implemented. List, read, update, comment, status-transition, and API-docs features are on the [Roadmap](#roadmap).
-
 ---
 
 ## Tech Stack
