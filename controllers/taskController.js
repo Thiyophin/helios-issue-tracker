@@ -7,7 +7,7 @@ const createTask = async (req, res) => {
   try {
     const { title, content, assignedTo, feature } = req.body || {};
 
-    const creatorId = req.user.userId;
+    const creatorId = req.user._id;
     const creatorRole = req.user.role;
 
     // Validate required fields

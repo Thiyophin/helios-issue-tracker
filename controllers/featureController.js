@@ -14,10 +14,10 @@ const createFeature = async (req, res) => {
     const feature = await Feature.create({
       title,
       content,
-      createdBy: req.user.userId,
+      createdBy: req.user._id,
     });
 
-    logger.info(`Feature created by team lead: ${req.user.userId}`);
+    logger.info(`Feature created by team lead: ${req.user._id}`);
 
     return res.status(201).json({
       message: 'Feature created successfully',

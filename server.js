@@ -8,10 +8,13 @@ import adminRoutes from './routes/adminRoutes.js';
 import featureRoutes from './routes/featureRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import testCaseRoutes from './routes/testCaseRoutes.js';
+import passport from './config/passport.js';
 
 const app = express();
 
 app.use(express.json());
+
+app.use(passport.initialize());
 
 connectDB();
 

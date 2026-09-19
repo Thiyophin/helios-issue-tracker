@@ -1,30 +1,21 @@
-import jwt from 'jsonwebtoken';
-import logger from '../utils/logger.js';
+import passport from '../config/passport.js';
 
 const authenticate = (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
+  passport.authenticate('jwt', { session: false }, (error, user) => {
+    if (error) {
+      return next(error);
+    }
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!user) {
       return res.status(401).json({
-        message: 'Authentication token required',
+        message: 'Invalid or expired token',
       });
     }
 
-    const token = authHeader.split(' ')[1];
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded;
+    req.user = user;
 
     next();
-  } catch {
-    logger.warn('Invalid or expired authentication token');
-
-    return res.status(401).json({
-      message: 'Invalid or expired token',
-    });
-  }
+  })(req, res, next);
 };
 
 export default authenticate;

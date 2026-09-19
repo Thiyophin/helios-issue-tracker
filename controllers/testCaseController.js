@@ -6,7 +6,7 @@ const createTestCase = async (req, res) => {
   try {
     const { feature, title, steps } = req.body || {};
 
-    const testerId = req.user.userId;
+    const testerId = req.user._id;
 
     // Validate required fields
     if (!feature || !title || !steps) {
