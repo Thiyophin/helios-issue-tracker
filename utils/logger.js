@@ -9,17 +9,6 @@ const logger = winston.createLogger({
   format: combine(timestamp(), errors({ stack: true }), json()),
 
   transports: [
-    // Local error log
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-    }),
-
-    // Local combined log
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-    }),
-
     // MongoDB logs
     new winston.transports.MongoDB({
       db: process.env.MONGO_URI,
