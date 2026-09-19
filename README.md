@@ -6,12 +6,12 @@ A role-based Task Management System built with **Node.js**, **Express.js**, and 
 
 ## Tech Stack
 
-* **Node.js** + **Express.js**
-* **MongoDB** + **Mongoose**
-* **JWT** Authentication
-* **bcryptjs** for password hashing
-* **Winston** for application logging
-* **dotenv** for environment configuration
+- **Node.js** + **Express.js**
+- **MongoDB** + **Mongoose**
+- **JWT** Authentication
+- **bcryptjs** for password hashing
+- **Winston** for application logging
+- **dotenv** for environment configuration
 
 ---
 
@@ -166,10 +166,10 @@ These credentials are created by the seed script.
 
 Creates users with roles:
 
-* `team_lead`
-* `developer`
-* `tester`
-* `reader`
+- `team_lead`
+- `developer`
+- `tester`
+- `reader`
 
 ### Features
 
@@ -179,10 +179,10 @@ Creates users with roles:
 
 A Feature contains:
 
-* Title
-* Content
-* Comments
-* Created By
+- Title
+- Content
+- Comments
+- Created By
 
 ### Tasks
 
@@ -192,46 +192,46 @@ A Feature contains:
 
 Task fields:
 
-* Title
-* Content
-* Comments
-* Created By
-* Assigned To
-* Feature
-* Status
+- Title
+- Content
+- Comments
+- Created By
+- Assigned To
+- Feature
+- Status
 
 Task Status Values:
 
-* `New`
-* `Active`
-* `QA`
-* `Closed`
+- `New`
+- `Active`
+- `QA`
+- `Closed`
 
 Task Rules:
 
-* Team Lead creates tasks for a Feature and assigns them to a Developer or Tester.
-* Developer-created tasks are automatically assigned to the Developer.
-* Tester-created tasks are automatically assigned to the Tester.
+- Team Lead creates tasks for a Feature and assigns them to a Developer or Tester.
+- Developer-created tasks are automatically assigned to the Developer.
+- Tester-created tasks are automatically assigned to the Tester.
 
 ### Test Cases
 
 | Method | Endpoint          | Access                              |
 | ------ | ----------------- | ----------------------------------- |
 | POST   | `/api/test-cases` | Tester Only                         |
-| GET    | `/api/test-cases` | All Authenticated Users *(planned)* |
+| GET    | `/api/test-cases` | All Authenticated Users _(planned)_ |
 
 Test Case fields:
 
-* Feature
-* Title
-* Steps
-* Created By
-* Assigned To
+- Feature
+- Title
+- Steps
+- Created By
+- Assigned To
 
 Rules:
 
-* Only Testers can create test cases.
-* Every authenticated user can view test cases.
+- Only Testers can create test cases.
+- Every authenticated user can view test cases.
 
 ---
 
@@ -282,21 +282,21 @@ Application logging is handled using **Winston**.
 
 Logs include:
 
-* Application startup.
-* Authentication events.
-* User creation events.
-* Feature, Task, and Test Case creation.
-* Errors and exceptions.
+- Application startup.
+- Authentication events.
+- User creation events.
+- Feature, Task, and Test Case creation.
+- Errors and exceptions.
 
 ---
 
 ## Current Features
 
-* JWT Authentication
-* Role-Based Authorization
-* Administrator Seeder
-* User Management
-* Feature Management
-* Task Management
-* Test Case Management
-* Winston Logging
+- JWT Authentication
+- Role-Based Authorization
+- Administrator Seeder
+- User Management
+- Feature Management
+- Task Management
+- Test Case Management
+- Winston Logging

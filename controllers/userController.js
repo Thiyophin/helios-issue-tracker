@@ -1,37 +1,25 @@
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
-import User from "../models/User.js";
-import logger from "../utils/logger.js";
+import User from '../models/User.js';
+import logger from '../utils/logger.js';
 
 const createUser = async (req, res) => {
   try {
-    const {
-      username,
-      name,
-      email,
-      password,
-      role,
-    } = req.body || {};
+    const { username, name, email, password, role } = req.body || {};
 
     // Validate required fields
     if (!username || !name || !email || !password || !role) {
       return res.status(400).json({
-        message: "Username, name, email, password and role are required",
+        message: 'Username, name, email, password and role are required',
       });
     }
 
     // Only these roles can be created through this endpoint
-    const allowedRoles = [
-      "team_lead",
-      "developer",
-      "tester",
-      "reader",
-    ];
+    const allowedRoles = ['team_lead', 'developer', 'tester', 'reader'];
 
     if (!allowedRoles.includes(role)) {
       return res.status(400).json({
-        message:
-          "Invalid role. Allowed roles: team_lead, developer, tester, reader",
+        message: 'Invalid role. Allowed roles: team_lead, developer, tester, reader',
       });
     }
 
@@ -40,7 +28,7 @@ const createUser = async (req, res) => {
 
     if (existingUsername) {
       return res.status(409).json({
-        message: "Username already exists",
+        message: 'Username already exists',
       });
     }
 
@@ -49,7 +37,7 @@ const createUser = async (req, res) => {
 
     if (existingEmail) {
       return res.status(409).json({
-        message: "Email already exists",
+        message: 'Email already exists',
       });
     }
 
@@ -65,12 +53,10 @@ const createUser = async (req, res) => {
       role,
     });
 
-    logger.info(
-      `User created by admin: ${user.username} (${user.role})`
-    );
+    logger.info(`User created by admin: ${user.username} (${user.role})`);
 
     return res.status(201).json({
-      message: "User created successfully",
+      message: 'User created successfully',
       user: {
         id: user._id,
         username: user.username,
@@ -80,13 +66,13 @@ const createUser = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Error creating user", {
+    logger.error('Error creating user', {
       message: error.message,
       stack: error.stack,
     });
 
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };

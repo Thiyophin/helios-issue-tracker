@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const testCaseSchema = new mongoose.Schema(
   {
     feature: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Feature",
+      ref: 'Feature',
       required: true,
     },
 
@@ -24,21 +24,21 @@ const testCaseSchema = new mongoose.Schema(
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
 
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-const TestCase = mongoose.model("TestCase", testCaseSchema);
+const TestCase = mongoose.model('TestCase', testCaseSchema);
 
 export default TestCase;

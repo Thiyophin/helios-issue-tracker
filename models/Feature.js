@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const featureSchema = new mongoose.Schema(
   {
@@ -23,15 +23,15 @@ const featureSchema = new mongoose.Schema(
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-const Feature = mongoose.model("Feature", featureSchema);
+const Feature = mongoose.model('Feature', featureSchema);
 
 export default Feature;

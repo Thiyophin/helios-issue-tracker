@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
-import logger from "../utils/logger.js";
+import mongoose from 'mongoose';
+import logger from '../utils/logger.js';
 
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
 
-    logger.info("MongoDB connected successfully");
+    logger.info('MongoDB connected successfully');
   } catch (error) {
-    logger.error("MongoDB connection failed", {
-    error: error.message,
-    stack: error.stack,
-});
+    logger.error('MongoDB connection failed', {
+      error: error.message,
+      stack: error.stack,
+    });
   }
 };
 

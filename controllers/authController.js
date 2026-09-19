@@ -1,8 +1,8 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-import logger from "../utils/logger.js";
+import logger from '../utils/logger.js';
 
 const login = async (req, res) => {
   try {
@@ -10,10 +10,10 @@ const login = async (req, res) => {
 
     // Validate request
     if (!username || !password) {
-      logger.warn("Login attempt with missing credentials");
+      logger.warn('Login attempt with missing credentials');
 
       return res.status(400).json({
-        message: "Username and password are required",
+        message: 'Username and password are required',
       });
     }
 
@@ -24,21 +24,18 @@ const login = async (req, res) => {
       logger.warn(`Failed login attempt for username: ${username}`);
 
       return res.status(401).json({
-        message: "Invalid username or password",
+        message: 'Invalid username or password',
       });
     }
 
     // Check password
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       logger.warn(`Failed login attempt for username: ${username}`);
 
       return res.status(401).json({
-        message: "Invalid username or password",
+        message: 'Invalid username or password',
       });
     }
 
@@ -51,13 +48,13 @@ const login = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRES_IN,
-      }
+      },
     );
 
     logger.info(`User logged in successfully: ${user.username}`);
 
     return res.status(200).json({
-      message: "Login successful",
+      message: 'Login successful',
       token,
       user: {
         id: user._id,
@@ -68,13 +65,13 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Login error", {
+    logger.error('Login error', {
       message: error.message,
       stack: error.stack,
     });
 
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };

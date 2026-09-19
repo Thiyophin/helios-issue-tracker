@@ -1,16 +1,11 @@
-import Task from "../models/Task.js";
-import User from "../models/User.js";
-import Feature from "../models/Feature.js";
-import logger from "../utils/logger.js";
+import Task from '../models/Task.js';
+import User from '../models/User.js';
+import Feature from '../models/Feature.js';
+import logger from '../utils/logger.js';
 
 const createTask = async (req, res) => {
   try {
-    const {
-      title,
-      content,
-      assignedTo,
-      feature,
-    } = req.body || {};
+    const { title, content, assignedTo, feature } = req.body || {};
 
     const creatorId = req.user.userId;
     const creatorRole = req.user.role;
@@ -18,18 +13,14 @@ const createTask = async (req, res) => {
     // Validate required fields
     if (!title || !content || !feature) {
       return res.status(400).json({
-        message: "Title, content and feature are required",
+        message: 'Title, content and feature are required',
       });
     }
 
     // Only these roles can create tasks
-    if (
-      !["team_lead", "developer", "tester"].includes(
-        creatorRole
-      )
-    ) {
+    if (!['team_lead', 'developer', 'tester'].includes(creatorRole)) {
       return res.status(403).json({
-        message: "You are not allowed to create tasks",
+        message: 'You are not allowed to create tasks',
       });
     }
 
@@ -38,7 +29,7 @@ const createTask = async (req, res) => {
 
     if (!existingFeature) {
       return res.status(404).json({
-        message: "Feature not found",
+        message: 'Feature not found',
       });
     }
 
@@ -50,11 +41,10 @@ const createTask = async (req, res) => {
      * Team Lead must provide the user
      * the task should be assigned to.
      */
-    if (creatorRole === "team_lead") {
+    if (creatorRole === 'team_lead') {
       if (!assignedTo) {
         return res.status(400).json({
-          message:
-            "Team lead must specify a developer or tester to assign the task",
+          message: 'Team lead must specify a developer or tester to assign the task',
         });
       }
 
@@ -62,19 +52,14 @@ const createTask = async (req, res) => {
 
       if (!assignedUser) {
         return res.status(404).json({
-          message: "Assigned user not found",
+          message: 'Assigned user not found',
         });
       }
 
       // Team Lead can only assign to developer or tester
-      if (
-        !["developer", "tester"].includes(
-          assignedUser.role
-        )
-      ) {
+      if (!['developer', 'tester'].includes(assignedUser.role)) {
         return res.status(400).json({
-          message:
-            "Tasks can only be assigned to a developer or tester",
+          message: 'Tasks can only be assigned to a developer or tester',
         });
       }
 
@@ -87,10 +72,7 @@ const createTask = async (req, res) => {
      * They cannot choose another user.
      * The task automatically belongs to themselves.
      */
-    if (
-      creatorRole === "developer" ||
-      creatorRole === "tester"
-    ) {
+    if (creatorRole === 'developer' || creatorRole === 'tester') {
       finalAssignedTo = creatorId;
     }
 
@@ -101,15 +83,13 @@ const createTask = async (req, res) => {
       createdBy: creatorId,
       assignedTo: finalAssignedTo,
       feature,
-      status: "New",
+      status: 'New',
     });
 
-    logger.info(
-      `Task created by ${creatorRole}: ${task._id}`
-    );
+    logger.info(`Task created by ${creatorRole}: ${task._id}`);
 
     return res.status(201).json({
-      message: "Task created successfully",
+      message: 'Task created successfully',
       task: {
         id: task._id,
         title: task.title,
@@ -124,13 +104,13 @@ const createTask = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Error creating task", {
+    logger.error('Error creating task', {
       message: error.message,
       stack: error.stack,
     });
 
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };

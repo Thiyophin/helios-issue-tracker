@@ -1,6 +1,6 @@
-import TestCase from "../models/TestCase.js";
-import Feature from "../models/Feature.js";
-import logger from "../utils/logger.js";
+import TestCase from '../models/TestCase.js';
+import Feature from '../models/Feature.js';
+import logger from '../utils/logger.js';
 
 const createTestCase = async (req, res) => {
   try {
@@ -11,14 +11,14 @@ const createTestCase = async (req, res) => {
     // Validate required fields
     if (!feature || !title || !steps) {
       return res.status(400).json({
-        message: "Feature, title and steps are required",
+        message: 'Feature, title and steps are required',
       });
     }
 
     // Steps must be an array
     if (!Array.isArray(steps) || steps.length === 0) {
       return res.status(400).json({
-        message: "Steps must be a non-empty array",
+        message: 'Steps must be a non-empty array',
       });
     }
 
@@ -27,7 +27,7 @@ const createTestCase = async (req, res) => {
 
     if (!existingFeature) {
       return res.status(404).json({
-        message: "Feature not found",
+        message: 'Feature not found',
       });
     }
 
@@ -40,12 +40,10 @@ const createTestCase = async (req, res) => {
       assignedTo: testerId,
     });
 
-    logger.info(
-      `Test case created by tester: ${testerId}`
-    );
+    logger.info(`Test case created by tester: ${testerId}`);
 
     return res.status(201).json({
-      message: "Test case created successfully",
+      message: 'Test case created successfully',
       testCase: {
         id: testCase._id,
         feature: testCase.feature,
@@ -58,13 +56,13 @@ const createTestCase = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Error creating test case", {
+    logger.error('Error creating test case', {
       message: error.message,
       stack: error.stack,
     });
 
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
