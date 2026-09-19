@@ -18,7 +18,7 @@ const createTask = async (req, res) => {
     }
 
     // Only these roles can create tasks
-    if (!['team_lead', 'developer', 'tester'].includes(creatorRole)) {
+    if (!['team_lead', 'developer'].includes(creatorRole)) {
       return res.status(403).json({
         message: 'You are not allowed to create tasks',
       });
@@ -67,12 +67,12 @@ const createTask = async (req, res) => {
     }
 
     /*
-     * DEVELOPER / TESTER
+     * DEVELOPER
      *
      * They cannot choose another user.
      * The task automatically belongs to themselves.
      */
-    if (creatorRole === 'developer' || creatorRole === 'tester') {
+    if (creatorRole === 'developer') {
       finalAssignedTo = creatorId;
     }
 

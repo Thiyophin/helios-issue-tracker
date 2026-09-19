@@ -6,6 +6,6 @@ import createTask from '../controllers/taskController.js';
 
 const router = express.Router();
 
-router.post('/', authenticate, authorize('team_lead', 'developer', 'tester'), createTask);
+router.post('/', authenticate, authorize('team_lead', 'developer'), createTask);
 
 export default router;
