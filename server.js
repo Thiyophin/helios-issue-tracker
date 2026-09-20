@@ -1,7 +1,8 @@
 import 'dotenv/config';
-
+import cors from 'cors';
 import express from 'express';
-
+import helmet from 'helmet';
+import { globalLimiter } from './middleware/rateLimitMiddleware.js';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -14,7 +15,17 @@ const app = express();
 
 app.use(express.json());
 
+app.use(globalLimiter);
+
+app.use(helmet());
+
 app.use(passport.initialize());
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  }),
+);
 
 connectDB();
 
