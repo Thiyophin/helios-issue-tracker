@@ -1,5 +1,6 @@
 import winston from 'winston';
 import 'winston-mongodb';
+import env from '../config/env.js';
 
 const { combine, timestamp, errors, json, colorize, simple } = winston.format;
 
@@ -11,7 +12,7 @@ const logger = winston.createLogger({
   transports: [
     // MongoDB logs
     new winston.transports.MongoDB({
-      db: process.env.MONGO_URI,
+      db: env.mongoUri,
       collection: 'logs',
       level: 'info',
       storeHost: true,

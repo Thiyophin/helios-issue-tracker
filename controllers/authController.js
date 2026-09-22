@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
+import env from '../config/env.js';
 import logger from '../utils/logger.js';
 
 const login = async (req, res) => {
@@ -49,9 +49,9 @@ const login = async (req, res) => {
         userId: user._id.toString(),
         role: user.role,
       },
-      process.env.JWT_SECRET,
+      env.jwtSecret,
       {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: env.jwtExpiresIn,
       },
     );
 

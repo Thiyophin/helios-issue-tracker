@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import env from './config/env.js';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = env.port;
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

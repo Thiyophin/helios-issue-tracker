@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-
 import User from '../models/User.js';
 import logger from '../utils/logger.js';
+import env from '../config/env.js';
 
 const seedAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(env.mongoUri);
 
     logger.info('MongoDB connected successfully');
 
@@ -19,12 +19,12 @@ const seedAdmin = async () => {
       process.exit(0);
     }
 
-    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
+    const hashedPassword = await bcrypt.hash(env.adminPassword, 12);
 
     await User.create({
-      username: process.env.ADMIN_USERNAME,
-      name: process.env.ADMIN_NAME,
-      email: process.env.ADMIN_EMAIL,
+      username: env.adminUsername,
+      name: env.adminName,
+      email: env.adminEmail,
       password: hashedPassword,
       role: 'admin',
     });
