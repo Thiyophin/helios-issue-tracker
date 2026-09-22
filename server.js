@@ -10,6 +10,7 @@ import featureRoutes from './routes/featureRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import testCaseRoutes from './routes/testCaseRoutes.js';
 import passport from './config/passport.js';
+import logger from './utils/logger.js';
 
 const app = express();
 
@@ -44,5 +45,5 @@ app.get('/', (req, res) => {
 const PORT = env.port;
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  logger.info(`Server running on http://localhost:${env.port}`);
 });
