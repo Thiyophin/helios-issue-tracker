@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import logger from '../utils/logger.js';
 import env from '../config/env.js';
+import { ROLES } from '../utils/roles.js';
 
 const seedAdmin = async () => {
   try {
@@ -11,7 +12,7 @@ const seedAdmin = async () => {
     logger.info('MongoDB connected successfully');
 
     const existingAdmin = await User.findOne({
-      role: 'admin',
+      role: ROLES.ADMIN,
     });
 
     if (existingAdmin) {
@@ -26,7 +27,7 @@ const seedAdmin = async () => {
       name: env.adminName,
       email: env.adminEmail,
       password: hashedPassword,
-      role: 'admin',
+      role: ROLES.ADMIN,
     });
 
     logger.info('Admin created successfully');

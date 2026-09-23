@@ -2,6 +2,7 @@ import Task from '../models/Task.js';
 import User from '../models/User.js';
 import Feature from '../models/Feature.js';
 import logger from '../utils/logger.js';
+import { ROLES, ASSIGNABLE_TASK_ROLES } from '../utils/roles.js';
 
 const createTask = async (req, res) => {
   try {
@@ -18,7 +19,7 @@ const createTask = async (req, res) => {
     }
 
     // Only these roles can create tasks
-    if (!['team_lead', 'developer'].includes(creatorRole)) {
+    if (![ROLES.TEAM_LEAD, ROLES.DEVELOPER].includes(creatorRole)) {
       return res.status(403).json({
         message: 'You are not allowed to create tasks',
       });
@@ -41,7 +42,7 @@ const createTask = async (req, res) => {
      * Team Lead must provide the user
      * the task should be assigned to.
      */
-    if (creatorRole === 'team_lead') {
+    if (creatorRole === ROLES.TEAM_LEAD) {
       if (!assignedTo) {
         return res.status(400).json({
           message: 'Team lead must specify a developer or tester to assign the task',
@@ -57,7 +58,7 @@ const createTask = async (req, res) => {
       }
 
       // Team Lead can only assign to developer or tester
-      if (!['developer', 'tester'].includes(assignedUser.role)) {
+      if (!ASSIGNABLE_TASK_ROLES.includes(assignedUser.role)) {
         return res.status(400).json({
           message: 'Tasks can only be assigned to a developer or tester',
         });
@@ -72,7 +73,7 @@ const createTask = async (req, res) => {
      * They cannot choose another user.
      * The task automatically belongs to themselves.
      */
-    if (creatorRole === 'developer') {
+    if (creatorRole === ROLES.DEVELOPER) {
       finalAssignedTo = creatorId;
     }
 

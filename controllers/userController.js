@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 
 import User from '../models/User.js';
 import logger from '../utils/logger.js';
+import { ADMIN_CREATABLE_ROLES } from '../utils/roles.js';
 
 const createUser = async (req, res) => {
   try {
@@ -14,10 +15,7 @@ const createUser = async (req, res) => {
       });
     }
 
-    // Only these roles can be created through this endpoint
-    const allowedRoles = ['team_lead', 'developer', 'tester', 'reader'];
-
-    if (!allowedRoles.includes(role)) {
+    if (!ADMIN_CREATABLE_ROLES.includes(role)) {
       return res.status(400).json({
         message: 'Invalid role. Allowed roles: team_lead, developer, tester, reader',
       });
