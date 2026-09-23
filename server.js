@@ -1,5 +1,4 @@
 import env from './config/env.js';
-import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import { globalLimiter } from './middleware/rateLimitMiddleware.js';
@@ -21,12 +20,6 @@ app.use(globalLimiter);
 app.use(helmet());
 
 app.use(passport.initialize());
-
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-  }),
-);
 
 connectDB();
 
