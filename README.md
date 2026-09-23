@@ -29,45 +29,6 @@ A role-based **Task Management System** REST API built with **Node.js**, **Expre
 
 ---
 
-## Project Structure
-
-```text
-task-management-backend/
-├── config/
-│   ├── db.js              # MongoDB connection
-│   └── passport.js        # passport-jwt strategy
-├── controllers/
-│   ├── authController.js
-│   ├── userController.js
-│   ├── featureController.js
-│   ├── taskController.js
-│   └── testCaseController.js
-├── middleware/
-│   ├── authMiddleware.js  # JWT authentication
-│   └── roleMiddleware.js  # role-based authorization
-├── models/
-│   ├── User.js
-│   ├── Feature.js
-│   ├── Task.js
-│   └── TestCase.js
-├── routes/
-│   ├── authRoutes.js
-│   ├── adminRoutes.js
-│   ├── featureRoutes.js
-│   ├── taskRoutes.js
-│   └── testCaseRoutes.js
-├── seed/
-│   └── admin.js           # seeds the administrator account
-├── utils/
-│   └── logger.js          # Winston logger
-├── eslint.config.js
-├── .env                   # not committed
-├── package.json
-└── server.js              # app entry point
-```
-
----
-
 ## Prerequisites
 
 - **Node.js** 18+ (Express 5 requires a modern Node runtime)
