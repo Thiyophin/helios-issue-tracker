@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: helios-api
+
+    ports:
+      - '5000:5000'
+
+    env_file:
+      - .env.docker
+
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:8.0
+
+    container_name: helios-mongodb
+
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
