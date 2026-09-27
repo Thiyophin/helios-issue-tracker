@@ -10,6 +10,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import testCaseRoutes from './routes/testCaseRoutes.js';
 import passport from './config/passport.js';
 import logger from './utils/logger.js';
+import errorMiddleware from './middleware/errorMiddleware.js';
 
 const app = express();
 
@@ -34,6 +35,9 @@ app.get('/', (req, res) => {
     message: 'Task Management API is running',
   });
 });
+
+// Global error handler — must be after routes
+app.use(errorMiddleware);
 
 const PORT = env.port;
 
