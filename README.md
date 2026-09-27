@@ -11,6 +11,7 @@ A role-based **Task Management System** REST API built with **Node.js**, **Expre
 - **Passport** (`passport-jwt`) + **JWT** for authentication
 - **bcryptjs** for password hashing
 - **Winston** for application logging
+- **Seq** for centralized log management
 - **Swagger / OpenAPI** for API documentation
 - **dotenv** + **envalid** for environment configuration
 - **ESLint** + **Prettier** + **Husky** + **lint-staged** for code quality
@@ -28,11 +29,14 @@ A role-based **Task Management System** REST API built with **Node.js**, **Expre
 - Task creation and assignment
 - Test case creation
 - Structured application logging
+- Centralized logging with Seq
 - Centralized error handling
 - Request rate limiting
 - Security headers with Helmet
 - Interactive OpenAPI / Swagger API documentation
-- Dockerized MongoDB and API environment
+- Dockerized API and MongoDB environment
+- MongoDB authentication with username and password
+- Persistent MongoDB data using Docker volumes
 
 ---
 
@@ -42,7 +46,7 @@ A role-based **Task Management System** REST API built with **Node.js**, **Expre
 - **Docker**
 - **Docker Compose**
 
-The project uses Docker for MongoDB and API development.
+The project is designed to run MongoDB and the API using Docker Compose.
 
 ---
 
@@ -56,4 +60,3 @@ git clone <repository-url>
 cd helios-issue-tracker
 
 npm install
-```
