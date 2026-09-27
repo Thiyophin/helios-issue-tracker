@@ -1,5 +1,5 @@
 import winston from 'winston';
-import 'winston-mongodb';
+import { SeqTransport } from '@datalust/winston-seq';
 import env from '../config/env.js';
 
 const { combine, timestamp, errors, json, colorize, simple } = winston.format;
@@ -9,16 +9,17 @@ const logger = winston.createLogger({
 
   format: combine(timestamp(), errors({ stack: true }), json()),
 
+  defaultMeta: {
+    service: 'helios-issue-tracker',
+  },
+
   transports: [
-    // MongoDB logs
-    new winston.transports.MongoDB({
-      db: env.mongoUri,
-      collection: 'logs',
-      level: 'info',
-      storeHost: true,
+    new SeqTransport({
+      serverUrl: env.seqUrl,
+      handleExceptions: true,
+      handleRejections: true,
     }),
 
-    // Terminal logs during development
     new winston.transports.Console({
       format: combine(colorize(), simple()),
     }),
