@@ -7,10 +7,6 @@ import logger from '../utils/logger.js';
 const login = async (req, res) => {
   try {
     const { username, password } = req.body || {};
-    console.log('=== LOGIN TEST ===');
-    console.log('username:', username);
-    console.log('username type:', typeof username);
-    console.log('password type:', typeof password);
 
     // Validate request
     if (!username || !password) {
