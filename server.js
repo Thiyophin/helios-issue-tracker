@@ -13,6 +13,9 @@ import logger from './utils/logger.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
+import projectRoutes from './routes/projectRoutes.js';
+import sprintRoutes from './routes/sprintRoutes.js';
+import taskStatusRoutes from './routes/taskStatusRoutes.js';
 
 const app = express();
 
@@ -33,6 +36,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/features', featureRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/test-cases', testCaseRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/sprints', sprintRoutes);
+app.use('/api/task-statuses', taskStatusRoutes);
 
 app.get('/', (req, res) => {
   res.json({

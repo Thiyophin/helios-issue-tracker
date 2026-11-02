@@ -1,19 +1,29 @@
 import Feature from '../models/Feature.js';
+import Sprint from '../models/Sprint.js';
 import logger from '../utils/logger.js';
 
 const createFeature = async (req, res) => {
   try {
-    const { title, content } = req.body || {};
+    const { title, content, sprint } = req.body || {};
 
-    if (!title || !content) {
+    if (!title || !content || !sprint) {
       return res.status(400).json({
-        message: 'Title and content are required',
+        message: 'Title, content, and sprint are required',
+      });
+    }
+
+    const existingSprint = await Sprint.findById(sprint);
+
+    if (!existingSprint) {
+      return res.status(404).json({
+        message: 'Sprint not found',
       });
     }
 
     const feature = await Feature.create({
       title,
       content,
+      sprint,
       createdBy: req.user._id,
     });
 
@@ -26,6 +36,7 @@ const createFeature = async (req, res) => {
         title: feature.title,
         content: feature.content,
         comments: feature.comments,
+        sprint: feature.sprint,
         createdBy: feature.createdBy,
         createdAt: feature.createdAt,
         updatedAt: feature.updatedAt,

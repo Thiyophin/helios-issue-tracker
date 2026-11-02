@@ -26,6 +26,12 @@ const featureSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+
+    sprint: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Sprint',
+      required: true,
+    },
   },
   {
     timestamps: true,
