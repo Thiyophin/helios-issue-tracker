@@ -12,7 +12,7 @@ const router = express.Router();
  * /api/features:
  *   post:
  *     summary: Create a feature
- *     description: Create a new feature in the issue tracker.
+ *     description: Create a feature associated with an existing sprint.
  *     tags:
  *       - Features
  *     security:
@@ -26,6 +26,7 @@ const router = express.Router();
  *             required:
  *               - title
  *               - content
+ *               - sprint
  *             properties:
  *               title:
  *                 type: string
@@ -33,6 +34,10 @@ const router = express.Router();
  *               content:
  *                 type: string
  *                 example: Implement JWT-based authentication for users.
+ *               sprint:
+ *                 type: string
+ *                 description: MongoDB ObjectId of the sprint this feature belongs to.
+ *                 example: 68f123456789012345678901
  *     responses:
  *       201:
  *         description: Feature created successfully
@@ -43,6 +48,7 @@ const router = express.Router();
  *       403:
  *         description: Team lead access required
  */
+
 router.post('/', authenticate, authorize(ROLES.TEAM_LEAD), createFeature);
 
 export default router;

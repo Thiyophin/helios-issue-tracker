@@ -12,6 +12,7 @@ const createFeature = async (req, res) => {
       });
     }
 
+    // Verify sprint exists
     const existingSprint = await Sprint.findById(sprint);
 
     if (!existingSprint) {
@@ -20,6 +21,7 @@ const createFeature = async (req, res) => {
       });
     }
 
+    // Create feature with sprint reference
     const feature = await Feature.create({
       title,
       content,
