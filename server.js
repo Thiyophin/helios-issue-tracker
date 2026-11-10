@@ -16,6 +16,7 @@ import swaggerSpec from './config/swagger.js';
 import projectRoutes from './routes/projectRoutes.js';
 import sprintRoutes from './routes/sprintRoutes.js';
 import taskStatusRoutes from './routes/taskStatusRoutes.js';
+import readerRoutes from './routes/readerRoutes.js';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/test-cases', testCaseRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/sprints', sprintRoutes);
 app.use('/api/task-statuses', taskStatusRoutes);
+app.use('/api/reader', readerRoutes);
 
 app.get('/', (req, res) => {
   res.json({

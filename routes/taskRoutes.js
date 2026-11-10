@@ -1,8 +1,7 @@
 import express from 'express';
-
+import createTask, { changeTaskStatus } from '../controllers/taskController.js';
 import authenticate from '../middleware/authMiddleware.js';
 import authorize from '../middleware/roleMiddleware.js';
-import createTask from '../controllers/taskController.js';
 import { ROLES } from '../utils/roles.js';
 
 const router = express.Router();
@@ -51,5 +50,10 @@ const router = express.Router();
  *         description: Insufficient permissions
  */
 router.post('/', authenticate, authorize(ROLES.TEAM_LEAD, ROLES.DEVELOPER), createTask);
-
+router.patch(
+  '/:taskId/status',
+  authenticate,
+  authorize(ROLES.TEAM_LEAD, ROLES.DEVELOPER, ROLES.TESTER),
+  changeTaskStatus,
+);
 export default router;

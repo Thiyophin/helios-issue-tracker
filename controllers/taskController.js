@@ -1,7 +1,10 @@
-import Task from '../models/Task.js';
 import User from '../models/User.js';
-import Feature from '../models/Feature.js';
 import logger from '../utils/logger.js';
+import mongoose from 'mongoose';
+import Task from '../models/Task.js';
+import Feature from '../models/Feature.js';
+import Sprint from '../models/Sprint.js';
+import TaskStatus from '../models/TaskStatus.js';
 import { ROLES, ASSIGNABLE_TASK_ROLES } from '../utils/roles.js';
 
 const createTask = async (req, res) => {
@@ -117,3 +120,105 @@ const createTask = async (req, res) => {
 };
 
 export default createTask;
+
+export const changeTaskStatus = async (req, res, next) => {
+  try {
+    // Get task ID and requested status
+    const { taskId } = req.params;
+    const { status: targetStatus } = req.body || {};
+
+    // 1. Validate task ID
+    if (!mongoose.isValidObjectId(taskId)) {
+      return res.status(400).json({
+        message: 'Invalid task ID',
+      });
+    }
+
+    // 2. Validate requested status
+    if (typeof targetStatus !== 'string' || !targetStatus.trim()) {
+      return res.status(400).json({
+        message: 'A valid status is required',
+      });
+    }
+
+    // 3. Find task
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Task not found',
+      });
+    }
+
+    // 4. Find feature associated with task
+    const feature = await Feature.findById(task.feature).select('sprint');
+
+    if (!feature) {
+      return res.status(404).json({
+        message: 'Feature not found',
+      });
+    }
+
+    // 5. Find sprint associated with feature
+    const sprint = await Sprint.findById(feature.sprint).select('project');
+
+    if (!sprint) {
+      return res.status(404).json({
+        message: 'Sprint not found',
+      });
+    }
+
+    // 6. Get task status configuration for the project
+    const taskStatusConfig = await TaskStatus.findOne({
+      project: sprint.project,
+    });
+
+    if (!taskStatusConfig) {
+      return res.status(404).json({
+        message: 'Task status configuration not found',
+      });
+    }
+
+    // 7. Find requested status in project configuration
+    const target = taskStatusConfig.statuses.find(
+      (configuredStatus) => configuredStatus.name === targetStatus.trim(),
+    );
+
+    if (!target) {
+      return res.status(400).json({
+        message: 'Requested status is not configured for this project',
+      });
+    }
+
+    // 8. Check if task already has the requested status
+    if (task.status === target.name) {
+      return res.status(400).json({
+        message: 'Task is already in this status',
+      });
+    }
+
+    // 9. Validate whether the transition is permitted
+    if (!target.permittedPredecessorsStates.includes(task.status)) {
+      return res.status(400).json({
+        message: 'Status transition is not permitted',
+      });
+    }
+
+    // 10. Update task status
+    task.status = target.name;
+
+    await task.save();
+
+    // 11. Return response
+    return res.status(200).json({
+      message: 'Task status updated successfully',
+      task: {
+        id: task._id,
+        status: task.status,
+        updatedAt: task.updatedAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
